@@ -1,11 +1,13 @@
-hook_a = 45;
-hook_len = 7;
+hook_len = 12;
 
-paper_slot_t    = 1;
-paper_slot_iw   = 75;
-paper_slot_ih   = 24;
+paper_slot_t      = 1;
+paper_slot_iw     = 75;
+paper_slot_ih     = 24;
+paper_slot_id     = 4.5;
+paper_slot_w      = paper_slot_iw+paper_slot_t*2;
+paper_slot_hole_w = 6;
 
-main_plate_t    = 1;
+main_plate_t    = 2;
 main_plate_w    = 144;
 main_plate_h    = paper_slot_t + paper_slot_ih + 1;
 support_plate_t = main_plate_t;
@@ -25,4 +27,15 @@ module plate_half(w,h,t,hook_len){
 		cube([t,h,hook_len]);
 }
 
+module paper_slot(iw,ih,id,t,hole_w){
+	difference(){
+		cube([iw+t,ih+t*2,id+t]);
+                translate([0,t,0]) cube([iw,ih,id]);
+                translate([0,t+ih/2-hole_w/2,0]) cube([iw,hole_w,100]);
+	}
+}
+
 plate(main_plate_w,main_plate_h,main_plate_t,hook_len);
+translate([0,36,0])plate(support_plate_w,support_plate_h,support_plate_t,hook_len);
+translate([main_plate_w/2-paper_slot_w/2,0,main_plate_t-0.01])
+	paper_slot(paper_slot_iw,paper_slot_ih,paper_slot_id,paper_slot_t,paper_slot_hole_w);
