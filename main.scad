@@ -41,16 +41,15 @@ module plate_half(w,h_min,h_max,t,hook_len,is_papers){
 	}
 }
 
-module paper_slot(iw,ih,id,t,hole_w){
+module paper_slot(iw,ih,id,t,floor_t,hole_w){
 	difference(){
 		cube([iw+t,ih+t*2,id+t]);
                 translate([0,t,0]) cube([iw,ih,id]);
                 translate([0,t+ih/2-hole_w/2,0]) cube([iw,hole_w,100]);
 	}
+	translate([0,0,-floor_t+0.001]) cube([iw+t,ih+t*2,floor_t]);
 }
-difference(){
-	plate(main_plate_w,main_plate_h_min,main_plate_h_max,main_plate_t,hook_len,false);
-}
+plate(main_plate_w,main_plate_h_min,main_plate_h_max,main_plate_t,hook_len,false);
 translate([0,36,0]) plate(support_plate_w,support_plate_h/3,support_plate_h,support_plate_t,hook_len,true);
 translate([main_plate_w/2-paper_slot_w/2,0,main_plate_t-0.01])
-	paper_slot(paper_slot_iw,paper_slot_ih,paper_slot_id,paper_slot_t,paper_slot_hole_w);
+	paper_slot(paper_slot_iw,paper_slot_ih,paper_slot_id,paper_slot_t,main_plate_t,paper_slot_hole_w);
