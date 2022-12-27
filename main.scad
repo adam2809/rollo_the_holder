@@ -8,37 +8,41 @@ paper_slot_w      = paper_slot_iw+paper_slot_t*2;
 paper_slot_hole_w = 6;
 
 main_plate_t           = 2;
+main_plate_mount_y     = paper_slot_ih + paper_slot_t*2 + 10;
 main_plate_overhang    = 20;
 main_plate_w           = 144+main_plate_overhang;
-main_plate_h_max       = paper_slot_t*2 + paper_slot_ih;
-main_plate_h_min       = main_plate_h_max/3;
+main_plate_h_min       = 9;
 main_plate_cutout_w    = 5;
 main_plate_cutout_h    = 3;
 main_plate_cutout_wall = 3;
-support_plate_t        = main_plate_t;
-support_plate_w        = main_plate_w;
-support_plate_h        = main_plate_h_max;
 
 
-module plate(w,h_min,h_max,t,hook_len,is_inward){
-	plate_half(w/2,h_min,h_max,t,hook_len,is_inward);
-	rotate([0,0,180]) translate([-w,-h_max,0])
-		plate_half(w/2,h_min,h_max,t,hook_len,is_inward);
+module plate_quarter(x,mount_x,y,mid_y,z,slope_x,cut_w,cut_d,cut_wall_t){
+	l = [
+		[-0.001,-0.001],
+		[0,mid_y],
+		[slope_x,mid_y],
+		[x-mount_x,y],
+		[x,y],
+		[x,y-cut_wall_t],
+		[x-cut_d,y-cut_wall_t],
+		[x-cut_d,y-cut_wall_t-cut_w],
+		[x,y-cut_wall_t-cut_w],
+		[x,0]
+	];
+	linear_extrude(z){
+		polygon(l);
+	}
+}
+module plate_half(x,mount_x,y,mid_y,z,slope_x,cut_w,cut_d,cut_wall_t){
+	plate_quarter(x,mount_x,y,mid_y,z,slope_x,cut_w,cut_d,cut_wall_t);
+	mirror([0,1,0]) plate_quarter(x,mount_x,y,mid_y,z,slope_x,cut_w,cut_d,cut_wall_t);
 }
 
-module plate_half(w,h_min,h_max,t,hook_len,is_papers){
-	difference(){
-		cube([w,h_max,t]);
 
-		translate([main_plate_cutout_wall,0,0]){
-			cube([main_plate_cutout_w,main_plate_cutout_h,100]);
-			translate([main_plate_cutout_wall+main_plate_cutout_w,0,0]) cube([1000,h_min,100]);
-		}
-		translate([main_plate_cutout_wall,h_max-main_plate_cutout_h,0]){
-			cube([main_plate_cutout_w,main_plate_cutout_h,100]);
-			translate([main_plate_cutout_wall+main_plate_cutout_w,main_plate_cutout_h-h_min,0]) cube([1000,h_min,100]);
-		}
-	}
+module plate(x,mount_x,y,mid_y,z,slope_x,cut_w,cut_d,cut_wall_t){
+	plate_half(x,mount_x,y,mid_y,z,slope_x,cut_w,cut_d,cut_wall_t);
+	mirror([1,0,0]) plate_half(x,mount_x,y,mid_y,z,slope_x,cut_w,cut_d,cut_wall_t);
 }
 
 module paper_slot(iw,ih,id,t,floor_t,hole_w){
@@ -49,7 +53,8 @@ module paper_slot(iw,ih,id,t,floor_t,hole_w){
 	}
 	translate([0,0,-floor_t+0.001]) cube([iw+t,ih+t*2,floor_t]);
 }
-plate(main_plate_w,main_plate_h_min,main_plate_h_max,main_plate_t,hook_len,false);
-translate([0,36,0]) plate(support_plate_w,support_plate_h/3,support_plate_h,support_plate_t,hook_len,true);
-translate([main_plate_w/2-paper_slot_w/2,0,main_plate_t-0.01])
-	paper_slot(paper_slot_iw,paper_slot_ih,paper_slot_id,paper_slot_t,main_plate_t,paper_slot_hole_w);
+//plate(main_plate_w,main_plate_h_min,main_plate_mount_y,main_plate_t,hook_len,false);
+//translate([0,36,0]) plate(support_plate_w,support_plate_h/3,support_plate_h,support_plate_t,hook_len,true);
+//translate([main_plate_w/2-paper_slot_w/2,0,main_plate_t-0.01])
+//	paper_slot(paper_slot_iw,paper_slot_ih,paper_slot_id,paper_slot_t,main_plate_t,paper_slot_hole_w);
+plate(144,11,paper_slot_ih+paper_slot_t*2+10,9,2,50,5,3,3);
