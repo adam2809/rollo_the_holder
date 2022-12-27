@@ -55,6 +55,6 @@ module paper_slot(iw,ih,id,t,floor_t,hole_w){
 }
 //plate(main_plate_w,main_plate_h_min,main_plate_mount_y,main_plate_t,hook_len,false);
 //translate([0,36,0]) plate(support_plate_w,support_plate_h/3,support_plate_h,support_plate_t,hook_len,true);
-//translate([main_plate_w/2-paper_slot_w/2,0,main_plate_t-0.01])
-//	paper_slot(paper_slot_iw,paper_slot_ih,paper_slot_id,paper_slot_t,main_plate_t,paper_slot_hole_w);
-plate(144,11,paper_slot_ih+paper_slot_t*2+10,9,2,50,5,3,3);
+translate([-(paper_slot_iw+paper_slot_t)/2,-(paper_slot_ih+paper_slot_t*2)/2,main_plate_t-0.01])
+	paper_slot(paper_slot_iw,paper_slot_ih,paper_slot_id,paper_slot_t,main_plate_t,paper_slot_hole_w);
+plate(144,11,paper_slot_ih+paper_slot_t*2+10,9,2,115,7,5,5);
